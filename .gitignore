@@ -1,4 +1,4 @@
-.yarn/*
+git remote add origin https://github.com/leopashov/Index_Project.git.yarn/*
 !.yarn/patches
 !.yarn/plugins
 !.yarn/releases
