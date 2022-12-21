@@ -108,4 +108,16 @@ describe("Index Token Contract", async() => {
             expect(indexTokenContract.connect(acc1).burn(tokensToBurnBN)).to.be.reverted
         })
     })
+    describe("When the deployer pauses the contract", async () => {
+        beforeEach(async () => {
+            console.log("Token Paused? ", await indexTokenContract.paused())
+            const pauseTx = await indexTokenContract.connect(deployer).pause();
+            await pauseTx.wait()
+            console.log("Token Paused? ", await indexTokenContract.paused())
+        })
+        it("Pauses the contract", async () => {
+            expect(await indexTokenContract.paused()).to.eq(true);
+        })
+        
+    })
 })
