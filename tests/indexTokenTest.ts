@@ -110,6 +110,13 @@ describe("Index Token Contract", async() => {
     })
     describe("When the deployer pauses the contract", async () => {
         beforeEach(async () => {
+            // Mint Tokens to acc1 address
+            const tokensToMint = 100
+            console.log("Minting ", tokensToMint, "tokens")
+            const tokensToMintBN = ethers.utils.parseEther(String(tokensToMint));
+            const mintTx = await indexTokenContract.connect(deployer).mint(acc1.address, tokensToMintBN);
+            await mintTx.wait();
+
             console.log("Token Paused? ", await indexTokenContract.paused())
             const pauseTx = await indexTokenContract.connect(deployer).pause();
             await pauseTx.wait()
@@ -118,6 +125,17 @@ describe("Index Token Contract", async() => {
         it("Pauses the contract", async () => {
             expect(await indexTokenContract.paused()).to.eq(true);
         })
-        
+        it("Doesn't allow transfers", async () => {
+            const tokensToTransferBN = ethers.utils.parseEther("10");
+            expect(await indexTokenContract.connect(acc1).transfer(deployer.address, tokensToTransferBN)).to.be.revertedWith('Pausable: paused')
+        })    
+    })
+    describe("When acc1 pauses the contract", async () => {
+        beforeEach(async () => {
+        })
+        it("Reverts", async () => {
+            console.log("Token Paused? ", await indexTokenContract.paused())
+            expect(await indexTokenContract.connect(acc1).pause()).to.be.reverted
+        })     
     })
 })
